@@ -62,3 +62,14 @@ public
 
 # Windows files
 Thumbs.db
+
+# Turborepo cache
+turbo
+turbo-lock.json
+turbo.json
+# Turborepo output
+out
+# Turborepo temporary files
+.temp
+# Turborepo logs
+logs
