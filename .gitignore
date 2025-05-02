@@ -64,6 +64,7 @@ public
 Thumbs.db
 
 # Turborepo cache
+.turbo
 turbo
 turbo-lock.json
 turbo.json

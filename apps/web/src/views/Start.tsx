@@ -13,7 +13,7 @@ export default function Start() {
           control.
         </p>
         <button
-          onClick={() => dispatch({ type: "SET_PHASE", phase: "map" })}
+          onClick={() => dispatch({ type: "SET_PHASE", phase: "draft" })}
           className="bg-cyan-400 hover:bg-cyan-500 text-black font-semibold px-8 py-4 rounded-lg shadow-md transition cursor-pointer"
         >
           Start Game

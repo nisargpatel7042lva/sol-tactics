@@ -1,13 +1,6 @@
 import { create } from "zustand";
 
-export type Phase =
-  | "start"
-  | "map"
-  | "ban"
-  | "pick"
-  | "placement"
-  | "match"
-  | "end";
+export type Phase = "start" | "draft" | "placement" | "match" | "end";
 
 export type GameAction = { type: "SET_PHASE"; phase: Phase };
 
