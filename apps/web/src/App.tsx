@@ -1,8 +1,6 @@
 // src/App.tsx
 import Start from "./views/Start";
-import Map from "./views/Map";
-import Ban from "./views/Ban";
-import Pick from "./views/Pick";
+import Draft from "./views/Draft";
 import Placement from "./views/Placement";
 import Match from "./views/Match";
 
@@ -14,9 +12,7 @@ function App() {
   return (
     <>
       {state.phase === "start" && <Start />}
-      {state.phase === "map" && <Map />}
-      {state.phase === "ban" && <Ban />}
-      {state.phase === "pick" && <Pick />}
+      {state.phase === "draft" && <Draft />}
       {state.phase === "placement" && <Placement />}
       {state.phase === "match" && <Match />}
     </>
