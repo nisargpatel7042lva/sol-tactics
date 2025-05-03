@@ -1,7 +1,7 @@
 import { useGameStore } from "@sol-tactics/game-state";
 
 export default function Placement() {
-  const { dispatch } = useGameStore();
+  const { setPhase } = useGameStore();
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background text-white">
@@ -11,7 +11,7 @@ export default function Placement() {
         </h2>
         {/* UI for class selection goes here */}
         <button
-          onClick={() => dispatch({ type: "SET_PHASE", phase: "match" })}
+          onClick={() => setPhase("match")}
           className="bg-cyan-400 hover:bg-cyan-500 text-black font-semibold px-8 py-4 rounded-lg shadow-md transition cursor-pointer"
         >
           Continue to Match

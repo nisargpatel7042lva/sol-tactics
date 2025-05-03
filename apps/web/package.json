@@ -10,8 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.1.5",
     "@sol-tactics/game-state": "workspace:*",
+    "@tailwindcss/vite": "^4.1.5",
+    "clsx": "^2.1.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
