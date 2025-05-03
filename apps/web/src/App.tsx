@@ -4,19 +4,21 @@ import Draft from "./views/Draft";
 import Placement from "./views/Placement";
 import Match from "./views/Match";
 
-import { useGameStore } from "@sol-tactics/game-state";
+import { useGameStore, type Phase } from "@sol-tactics/game-state";
+import React, { FC } from "react";
+
+const phases: Record<Phase, FC> = {
+  start: Start,
+  draft: Draft,
+  placement: Placement,
+  match: Match,
+};
 
 function App() {
   const { state } = useGameStore();
+  const phase = state.phase;
 
-  return (
-    <>
-      {state.phase === "start" && <Start />}
-      {state.phase === "draft" && <Draft />}
-      {state.phase === "placement" && <Placement />}
-      {state.phase === "match" && <Match />}
-    </>
-  );
+  return <>{phases[phase] && React.createElement(phases[phase])}</>;
 }
 
 export default App;
