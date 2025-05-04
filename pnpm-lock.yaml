@@ -48,6 +48,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@sol-tactics/game-classes':
+        specifier: workspace:*
+        version: link:../../packages/game-classes
       '@sol-tactics/game-state':
         specifier: workspace:*
         version: link:../../packages/game-state
@@ -109,6 +112,12 @@ importers:
       vite:
         specifier: ^6.3.1
         version: 6.3.4(jiti@2.4.2)(lightningcss@1.29.2)
+
+  packages/game-classes:
+    dependencies:
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
 
   packages/game-state:
     dependencies:
