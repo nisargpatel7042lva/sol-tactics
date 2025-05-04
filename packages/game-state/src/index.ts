@@ -5,9 +5,11 @@ export type Phase = "start" | "draft" | "placement" | "match";
 export type GameAction =
   | { type: "SET_PHASE"; phase: Phase }
   | { type: "BAN_CLASS"; player: number; className: string }
-  | { type: "PICK_UNIT"; player: number; unit: string };
+  | { type: "PICK_UNIT"; player: number; unit: string }
+  | { type: "SET_PREVIEW"; className: string };
 
 export interface DraftState {
+  preview: string | null;
   actionSequence: { type: string; player: number }[];
   currentTurn: number;
   currentRound: number;
@@ -26,6 +28,7 @@ export interface GameStore {
   state: GameState;
   setPhase: (phase: Phase) => void;
   draftPick: (item: string) => void;
+  previewClass: (item: string) => void;
 }
 
 export const useGameStore = create<GameStore>((set) => ({
@@ -33,6 +36,7 @@ export const useGameStore = create<GameStore>((set) => ({
     phase: "start",
     history: [],
     draft: {
+      preview: null,
       actionSequence: [
         { type: "ban", player: 1 },
         { type: "ban", player: 2 },
@@ -58,6 +62,21 @@ export const useGameStore = create<GameStore>((set) => ({
       pickedUnits: { 1: [], 2: [] },
     },
   },
+  previewClass: (item) => {
+    set((store) => ({
+      state: {
+        ...store.state,
+        draft: {
+          ...store.state.draft,
+          preview: item,
+        },
+        history: [
+          ...store.state.history,
+          { type: "SET_PREVIEW", className: item },
+        ],
+      },
+    }));
+  },
   setPhase: (phase) => {
     set((store) => ({
       state: {
@@ -80,6 +99,7 @@ export const useGameStore = create<GameStore>((set) => ({
             ...store.state,
             draft: {
               ...store.state.draft,
+              preview: null,
               bannedClasses: {
                 ...store.state.draft.bannedClasses,
                 [currentAction.player]: [
@@ -114,15 +134,13 @@ export const useGameStore = create<GameStore>((set) => ({
 
           const isLastPick = nextActionIndex === 0;
 
-          if (isLastPick) {
-            history.push({ type: "SET_PHASE", phase: "placement" });
-          }
           return {
             state: {
               ...store.state,
               phase: isLastPick ? "placement" : store.state.phase,
               draft: {
                 ...store.state.draft,
+                preview: null,
                 pickedUnits: {
                   ...store.state.draft.pickedUnits,
                   [currentAction.player]: [...playerUnits, item],

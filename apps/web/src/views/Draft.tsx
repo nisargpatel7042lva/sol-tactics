@@ -13,13 +13,44 @@ const CLASSES = [
 ];
 
 export default function Draft() {
-  const { state, draftPick } = useGameStore();
+  const { state, draftPick, previewClass } = useGameStore();
+
   const { draft } = state;
-  console.log(draft);
-  const { actionIndex, actionSequence, bannedClasses, pickedUnits } = draft;
+  const { preview, actionIndex, actionSequence, bannedClasses, pickedUnits } =
+    draft;
 
   const currentAction = actionSequence[actionIndex];
   const player = currentAction.player;
+
+  const isBanned = (unitClass: string) =>
+    bannedClasses[2].includes(unitClass) ||
+    bannedClasses[1].includes(unitClass);
+
+  const isMaxPicked = (unitClass: string) => {
+    const playerUnitCount = pickedUnits[player].filter(
+      (unit) => unit === unitClass
+    ).length;
+    return playerUnitCount >= 2;
+  };
+
+  const handleSingleClick = (unit: string) => {
+    if (!isBanned(unit) && !isMaxPicked(unit)) {
+      previewClass(unit);
+    }
+  };
+
+  const handleDoubleClick = (unit: string) => {
+    if (!isBanned(unit) && !isMaxPicked(unit)) {
+      draftPick(unit);
+    }
+  };
+
+  const handleConfirm = () => {
+    if (preview) {
+      draftPick(preview);
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-background text-white">
       <div className="flex flex-row">
@@ -49,42 +80,53 @@ export default function Draft() {
           </div>
         </div>
       </div>
-      <div className="flex-1 flex flex-row justify-between items-center m-2">
-        <div className="flex flex-row w-full overflow-x-auto">
-          <div className="flex-1 grid grid-cols-4 gap-2">
-            {CLASSES.map((unitClass) => {
-              const isBanned =
-                bannedClasses[2].includes(unitClass) ||
-                bannedClasses[1].includes(unitClass);
-              const playerUnitCount = pickedUnits[player].filter(
-                (unit) => unit === unitClass
-              ).length;
-              const isMaxPicked = playerUnitCount >= 2;
-
-              return (
-                <div
-                  key={unitClass}
-                  onClick={() => !isMaxPicked && draftPick(unitClass)}
-                  className={clsx(
-                    "aspect-square flex items-center justify-center bg-gray-800",
-                    isBanned && "bg-red-600 opacity-75 cursor-none",
-                    isMaxPicked && "opacity-70 cursor-none"
-                  )}
-                >
-                  {unitClass}
-                </div>
-              );
-            })}
+      <div className="flex-1 flex-col justify-items-center">
+        <div className="flex flex-row w-full justify-between items-center">
+          <div className="flex flex-row w-full overflow-x-auto">
+            <div className="flex-1 grid grid-cols-4 gap-2 p-2 mb-2">
+              {CLASSES.map((unitClass) => {
+                return (
+                  <div
+                    key={unitClass}
+                    onClick={() => handleSingleClick(unitClass)}
+                    onDoubleClick={() => handleDoubleClick(unitClass)}
+                    className={clsx(
+                      "aspect-square flex items-center justify-center bg-gray-800 cursor-pointer",
+                      isBanned(unitClass) &&
+                        "bg-red-600 opacity-75 cursor-none",
+                      isMaxPicked(unitClass) && "opacity-70 cursor-none",
+                      preview === unitClass && "ring-2 ring-cyan-400"
+                    )}
+                  >
+                    {unitClass}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
+        {preview && !(isBanned(preview) || isMaxPicked(preview)) && (
+          <button
+            onClick={handleConfirm}
+            className="bg-cyan-400 hover:bg-cyan-500 text-black font-semibold px-4 py-2 rounded-lg shadow-md transition cursor-pointer w-2xl"
+          >
+            Confirm Selection
+          </button>
+        )}
       </div>
       <div className="flex flex-row justify-between p-2">
-        <div className="flex flex-row items-end jus col-auto gap-2">
-          <div className="aspect-square w-60 flex items-center justify-center bg-gray-800">
-            Selected Unit
-          </div>
-          <div className="h-46 w-46 flex items-center justify-center bg-gray-800">
-            Class Preview
+        <div className="flex flex-col items-end gap-2">
+          <div className="aspect-square w-60 flex flex-col items-center justify-center bg-gray-800 p-4">
+            {preview ? (
+              <>
+                <h3 className="text-xl font-bold mb-2">{preview}</h3>
+                <p className="text-sm text-gray-300 text-center">
+                  Class details and abilities will be shown here
+                </p>
+              </>
+            ) : (
+              <p className="text-gray-400">Select a class to preview</p>
+            )}
           </div>
         </div>
         <div className="flex flex-col justify-end">
