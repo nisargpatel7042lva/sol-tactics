@@ -4,17 +4,17 @@ export type Phase = "start" | "draft" | "placement" | "match";
 
 export type GameAction =
   | { type: "SET_PHASE"; phase: Phase }
-  | { type: "BAN_CLASS"; player: number; className: string }
+  | { type: "BAN_CLASS"; player: number; class: number }
   | { type: "PICK_UNIT"; player: number; unit: string }
-  | { type: "SET_PREVIEW"; className: string };
+  | { type: "SET_PREVIEW"; class: number };
 
 export interface DraftState {
-  preview: string | null;
+  preview: number | null;
   actionSequence: { type: string; player: number }[];
   currentTurn: number;
   currentRound: number;
-  bannedClasses: Record<number, string[]>;
-  pickedUnits: Record<number, string[]>;
+  bannedClasses: Record<number, number[]>;
+  pickedUnits: Record<number, number[]>;
   actionIndex: number;
 }
 
@@ -27,8 +27,8 @@ export interface GameState {
 export interface GameStore {
   state: GameState;
   setPhase: (phase: Phase) => void;
-  draftPick: (item: string) => void;
-  previewClass: (item: string) => void;
+  draftPick: (item: number) => void;
+  previewClass: (item: number) => void;
 }
 
 export const useGameStore = create<GameStore>((set) => ({
@@ -70,10 +70,7 @@ export const useGameStore = create<GameStore>((set) => ({
           ...store.state.draft,
           preview: item,
         },
-        history: [
-          ...store.state.history,
-          { type: "SET_PREVIEW", className: item },
-        ],
+        history: [...store.state.history, { type: "SET_PREVIEW", class: item }],
       },
     }));
   },
@@ -114,7 +111,7 @@ export const useGameStore = create<GameStore>((set) => ({
               {
                 type: "BAN_CLASS",
                 player: currentAction.player,
-                className: item,
+                class: item,
               },
             ],
           },
